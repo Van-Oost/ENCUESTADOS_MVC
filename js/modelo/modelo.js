@@ -47,7 +47,6 @@ Modelo.prototype = {
 
   agregaRespuesta: function() {
   },
-
    
    sumarUnVotoRespuesta: function() {
   },
