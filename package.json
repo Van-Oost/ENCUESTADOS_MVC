@@ -1,0 +1,14 @@
+{
+  "name": "7_encuestados",
+  "version": "1.0.0",
+  "description": "encuestados_MVC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nico.vanoost@gmail.com",
+  "license": "ISC",
+  "keywords": [
+    "MVC"
+  ]
+}
