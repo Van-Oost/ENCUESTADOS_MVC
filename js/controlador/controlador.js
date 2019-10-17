@@ -11,25 +11,25 @@ Controlador.prototype = {
   },
 
   borrarPregunta: function(id) {
-      this.modelo.borrarPregunta(id);
+    this.modelo.borrarPregunta(id);
   },
 
   agregaRespuesta: function() {
     this.modelo.agregaRespuesta();
   },
 
-   
-   sumarUnVotoRespuesta: function() {
-    this.modelo.sumarUnVotoRespuesta();
+  
+   editarPregunta: function(id) {
+    this.modelo.editarPregunta(id);
   },
 
   
-   editarPregunta: function() {
-    this.modelo.editarPregunta();
-  },
-
-  
-   borrarTodasPreguntas: function() {
+  borrarTodasPreguntas: function() {
     this.modelo.borrarTodasPreguntas();
   },
+
+  agregarVoto: function(nombrePregunta,respuestaSeleccionada){
+    this.modelo.sumarUnVotoRespuesta(nombrePregunta,respuestaSeleccionada);
+  },
+
 };

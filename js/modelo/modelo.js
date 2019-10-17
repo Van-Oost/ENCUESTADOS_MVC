@@ -8,8 +8,9 @@ var Modelo = function() {
   //inicializacion de eventos
   this.preguntaAgregada = new Evento(this);
   this.preguntaEliminada = new Evento(this);
+  this.preguntasBorradas = new Evento(this);
+  this.preguntaModificada = new Evento(this);
 };
-
 
 Modelo.prototype = {
   //se obtiene el id más grande asignado a una pregunta
@@ -29,7 +30,11 @@ Modelo.prototype = {
   agregarPregunta: function(nombre, respuestas) {
     var id = this.obtenerUltimoId();
     id++;
-    var nuevaPregunta = {'textoPregunta': nombre, 'id': id, 'cantidadPorRespuesta': respuestas};
+    var nuevaPregunta = {
+      "textoPregunta": nombre, 
+      "id": id,
+      "cantidadPorRespuesta": respuestas
+      };
     this.preguntas = this.abrir("preguntas");
     this.preguntas.push(nuevaPregunta);
     this.guardar("preguntas", this.preguntas);
@@ -38,7 +43,7 @@ Modelo.prototype = {
 
   borrarPregunta: function(id) {
     this.preguntas = this.abrir("preguntas");
-    var index = this.preguntas.indexOf(id);
+    var index = this.posicionId(id);
     this.preguntas.splice(index, 1);
     this.guardar("preguntas", this.preguntas);
     this.preguntaEliminada.notificar();
@@ -48,17 +53,38 @@ Modelo.prototype = {
   agregaRespuesta: function() {
   },
    
-   sumarUnVotoRespuesta: function() {
+  sumarUnVotoRespuesta: function(nombrePregunta,respuestaSeleccionada) {
+    var pregunta = nombrePregunta;
+    var respuesta = respuestaSeleccionada;
+    console.log(preguntas);
+    this.preguntas.forEach(preg => {
+      if(preg.textoPregunta===pregunta){
+        preg.cantidadPorRespuesta.forEach(resp => {
+          if(resp.textoRespuesta===respuesta){
+            resp.cantidad++;
+          };
+        });
+      }
+    });
+    this.guardar("preguntas", this.preguntas);
   },
 
+
+
   
-   editarPregunta: function() {
+   editarPregunta: function(id) {
+    var index = this.posicionId(id);
+    var nuevoTexto = prompt("Ingrese nueva pregunta");
+    this.preguntas[index].textoPregunta = nuevoTexto;
+    this.guardar("preguntas", this.preguntas);
+    this.preguntaModificada.notificar();
   },
 
   
    borrarTodasPreguntas: function() {
-    this.preguntas = [];
+    this.preguntas.length = 0;
     this.guardar("preguntas", this.preguntas);
+    this.preguntasBorradas.notificar();
   },
 
 
@@ -71,6 +97,12 @@ Modelo.prototype = {
 
   guardar: function(clave, valor){
     localStorage.setItem(clave, JSON.stringify(valor));
-  }
+  },
+
+  posicionId: function(idBuscado) {
+    var arrIds = this.preguntas.map(pregunta => pregunta.id)
+    var index = arrIds.indexOf(parseInt(idBuscado));
+    return index;
+  },
 
 };

@@ -14,7 +14,15 @@ var VistaUsuario = function(modelo, controlador, elementos) {
   this.modelo.preguntaEliminada.suscribir(function() { 
     contexto.reconstruirLista(); 
   });
+  this.modelo.preguntasBorradas.suscribir(function() { 
+    contexto.reconstruirLista(); 
+  });
+  this.modelo.preguntaModificada.suscribir(function() { 
+    contexto.reconstruirLista();
+  });
+  
 };
+
 
 VistaUsuario.prototype = {
   //muestra la lista por pantalla y agrega el manejo del boton agregar
@@ -25,6 +33,7 @@ VistaUsuario.prototype = {
     
     elementos.botonAgregar.click(function() {
       contexto.agregarVotos(); 
+      contexto.reconstruirGrafico();/// reconstruye el grafico despues de votar
     });
       
     this.reconstruirGrafico();
@@ -52,8 +61,12 @@ VistaUsuario.prototype = {
     var contexto = this;
     var preguntas = this.modelo.preguntas;
     preguntas.forEach(function(clave){
-      //completar
-      //agregar a listaPreguntas un elemento div con valor "clave.textoPregunta", texto "clave.textoPregunta", id "clave.id"
+      var nuevaPregunta = $("<div>", {
+        value: clave.textoPregunta,
+        id: clave.id,
+        text: clave.textoPregunta
+      });
+      listaPreguntas.append(nuevaPregunta);
       var respuestas = clave.cantidadPorRespuesta;
       contexto.mostrarRespuestas(listaPreguntas,respuestas, clave);
     })
@@ -80,8 +93,8 @@ VistaUsuario.prototype = {
         var nombrePregunta = $(this).attr('value');
         var id = $(this).attr('id');
         var respuestaSeleccionada = $('input[name=' + id + ']:checked').val();
-        $('input[name=' + id + ']').prop('checked',false);
         contexto.controlador.agregarVoto(nombrePregunta,respuestaSeleccionada);
+        $('input[name=' + id + ']').prop('checked',false);
       });
   },
 

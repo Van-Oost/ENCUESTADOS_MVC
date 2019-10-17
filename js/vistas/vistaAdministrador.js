@@ -14,6 +14,13 @@ var VistaAdministrador = function(modelo, controlador, elementos) {
   this.modelo.preguntaEliminada.suscribir(function() { 
     contexto.reconstruirLista(); 
   });
+  this.modelo.preguntasBorradas.suscribir(function() { 
+    contexto.reconstruirLista(); 
+  });
+  this.modelo.preguntaModificada.suscribir(function() { 
+    contexto.reconstruirLista();
+  });
+
 };
 
 
@@ -27,13 +34,11 @@ VistaAdministrador.prototype = {
   },
 
   construirElementoPregunta: function(pregunta){
-    var contexto = this;
     var nuevoItem = $("<li>", {
       class: "list-group-item",
-      id: "pregunta.id",
-      texto: "pregunta.textoPregunta"
+      id: pregunta.id,
+      text: pregunta.textoPregunta,
     })
-    //asignar a nuevoitem un elemento li con clase "list-group-item", id "pregunta.id" y texto "pregunta.textoPregunta"
     var interiorItem = $('.d-flex');
     var titulo = interiorItem.find('h5');
     titulo.text(pregunta.textoPregunta);
@@ -63,21 +68,43 @@ VistaAdministrador.prototype = {
       var respuestas = [];
 
       $('[name="option[]"]').each(function() {
-        var respuesta = {'textoRespuesta': $(this).val(), 'cantidad': 0};
-        respuestas.push(respuesta)
-      })
+        var respuesta = {
+          'textoRespuesta': $(this).val(),
+          'cantidad': 0
+        };
+        if (respuesta.textoRespuesta != ""){
+          respuestas.push(respuesta);
+        };
+      });
+
       contexto.limpiarFormulario();
       contexto.controlador.agregarPregunta(value, respuestas);
     });
-    //asociar el resto de los botones a eventos
+    e.botonEditarPregunta.click(function() {
+      var id = contexto.buscarId();
+      contexto.controlador.editarPregunta(id)
+    });
 
     e.botonBorrarPregunta.click(function() {
-      var id = parseInt($('.list-group-item.active').attr('id'));
+    
+      var id = contexto.buscarId();
       contexto.controlador.borrarPregunta(id)
+    });
+
+    e.borrarTodo.click(function() {
+      contexto.controlador.borrarTodasPreguntas();
     });
   },
 
+  
   limpiarFormulario: function(){
     $('.form-group.answer.has-feedback.has-success').remove();
   },
+
+  buscarId: function(){
+    var id = $('.list-group-item.active').attr('id');
+    return id;
+  },
 };
+
+
