@@ -10,17 +10,16 @@ var VistaUsuario = function(modelo, controlador, elementos) {
   //suscripcion a eventos del modelo
   this.modelo.preguntaAgregada.suscribir(function() {
     contexto.reconstruirLista();
+    contexto.reconstruirGrafico();
   });
   this.modelo.preguntaEliminada.suscribir(function() { 
     contexto.reconstruirLista(); 
+    contexto.reconstruirGrafico();
   });
   this.modelo.preguntasBorradas.suscribir(function() { 
-    contexto.reconstruirLista(); 
-  });
-  this.modelo.preguntaModificada.suscribir(function() { 
     contexto.reconstruirLista();
+    contexto.reconstruirGrafico(); 
   });
-  
 };
 
 
