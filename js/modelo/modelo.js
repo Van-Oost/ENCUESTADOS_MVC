@@ -80,7 +80,6 @@ Modelo.prototype = {
    editarPregunta: function(id) {
     this.blanquearInputs();
     
-    
     this.preguntaNueva = false;    
     var index = this.posicionId(id);
     var pregunta = this.preguntas[index]
@@ -88,19 +87,9 @@ Modelo.prototype = {
     var cantRespuestas = pregunta.cantidadPorRespuesta.length;
     var inputsRespuestas = document.getElementsByClassName("form-control");
     
-    // crea los input fields necesarios para poder rellenarlos con las respuestas existentes
-    if(inputsRespuestas.length < cantRespuestas ){
-      for (let index = 0; index < cantRespuestas -1; index++) {
-        var $template = $('#optionTemplate'),
-        $clone = $template
-        .clone()
-        .removeClass('hide')
-        .attr('id', "respuesta" + this.cantRespuestas)
-        .insertBefore($template),
-        $option = $clone.find('[name="option[]"]');
-      };
-    };
-    
+    this.crearInputs(inputsRespuestas, cantRespuestas);
+
+    // scrollea la pantalla hasta arriba
     $('html, body').animate({ scrollTop: 0 }, 'fast');
 
     // rellena los input fields con el nombre de la pregunta y sus respuestas
@@ -112,13 +101,14 @@ Modelo.prototype = {
     };   
   },
   
+  // borra todas las preguntas y guarda la lista vacia en el storage local
    borrarTodasPreguntas: function() {
     this.preguntas.length = 0;
     this.guardar("preguntas", this.preguntas);
     this.preguntasBorradas.notificar();
   },
 
-
+  // trae la lista de preguntas desde el storage local
   abrir: function(clave){
     if (localStorage.getItem(clave) !== null){
       var string = localStorage.getItem(clave);
@@ -126,16 +116,19 @@ Modelo.prototype = {
     } else return [];
   },
 
+  // guarda la lista de preguntas en el storage local
   guardar: function(clave, valor){
     localStorage.setItem(clave, JSON.stringify(valor));
   },
 
+  // busca la posicion de una pregunta en la lista basandose en su id
   posicionId: function(idBuscado) {
     var arrIds = this.preguntas.map(pregunta => pregunta.id)
     var index = arrIds.indexOf(parseInt(idBuscado));
     return index;
   },
 
+  // al apretar el boton Guardar Pregunta, si la pregunta ya existia la sobreescribe en su antiguo lugar en la lista
   editarExistente: function(nombre, respuestas){
     this.preguntas.forEach(preg => {
       pregEditada = this.preguntaEditada;
@@ -156,6 +149,7 @@ Modelo.prototype = {
     });
   },
 
+  // Blanquea los inputs 
   blanquearInputs: function(){
     var inputsRespuestas = document.getElementsByClassName("form-control");
     for (i = 0; i < inputsRespuestas.length; i++) {
@@ -163,6 +157,7 @@ Modelo.prototype = {
     };
   },
 
+  // elimina inputs creados si hay mas de 5
   borrarInputs: function(){
     var inputsRespuestas = document.getElementsByClassName("form-group answer has-feedback");
     for (i = 0; i < inputsRespuestas.length; i++) {
@@ -170,6 +165,21 @@ Modelo.prototype = {
           inputsRespuestas[i].parentNode.removeChild(inputsRespuestas[i])
         };
       }; 
+  },
+
+  // crea los input fields necesarios para poder rellenarlos con las respuestas existentes
+  crearInputs: function(inputsRespuestas, cantRespuestas){
+    if(inputsRespuestas.length <= cantRespuestas ){
+      for (let index = 0; index < cantRespuestas -1; index++) {
+        var $template = $('#optionTemplate'),
+        $clone = $template
+        .clone()
+        .removeClass('hide')
+        .attr('id', "respuesta" + this.cantRespuestas)
+        .insertBefore($template),
+        $option = $clone.find('[name="option[]"]');
+      }
+    }
   }
   
 
